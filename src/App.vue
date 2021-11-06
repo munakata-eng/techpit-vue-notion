@@ -1,19 +1,18 @@
 <template>
   <div id="app">
     <NavigationBar />
-    <MainPage />
+    <!-- URLに対応したコンポーネントを表示 -->
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 import NavigationBar from '@/components/NavigationBar.vue'
-import MainPage from '@/components/MainPage.vue'
 
 export default {
   name: 'App',
   components: {
     NavigationBar,
-    MainPage
   }
 }
 </script>
