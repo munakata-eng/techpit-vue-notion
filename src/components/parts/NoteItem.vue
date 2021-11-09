@@ -18,7 +18,7 @@
       <div class="button-icon" v-if="layer < 3" @click="onClickChildNote(note)">
         <i class="fas fa-sitemap"></i>
       </div>
-      <div class="button-icon">
+      <div class="button-icon" @click="onClickAddNoteAfter(parentNote, note)">
         <i class="fas fa-plus-circle"></i>
       </div>
       <div class="button-icon" @click="onClickEdit(note)">
@@ -41,6 +41,7 @@
       @editStart="onClickEdit"
       @editEnd="onEditEnd"
       @addChild="onClickChildNote"
+      @addNoteAfter="onClickAddNoteAfter"
     />
   </div>
   </div>  
@@ -73,6 +74,9 @@ export default {
     onClickChildNote : function(note) {
       this.$emit('addChild', note);
     },
+    onClickAddNoteAfter : function(parentNote, note) {
+      this.$emit('addNoteAfter', parentNote, note);
+    },    
   },
 }
 </script>
