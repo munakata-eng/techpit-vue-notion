@@ -32,6 +32,18 @@
         </div>
         <div class="note-content">
           <h3 class="note-title">{{selectedNote.name}}</h3>
+          <WidgetItem
+            v-for="widget in selectedNote.widgetList"
+            v-bind:widget="widget"
+            v-bind:layer="1"
+            v-bind:key="widget.id"
+            @delete="onDeleteWidget"
+            @addChild="onAddChildWidget"
+            @addWidgetAfter="onAddWidgetAfter"
+          />
+          <button class="transparent" @click="onClickButtonAddWidget">
+            <i class="fas fa-plus-square"></i>ウィジェットを追加
+          </button>
         </div>
       </template>      
     </div>
@@ -40,6 +52,7 @@
 
 <script>
 import NoteItem from '@/components/parts/NoteItem.vue'
+import WidgetItem from '@/components/parts/WidgetItem.vue'
 import draggable from 'vuedraggable'
 
 export default {
@@ -60,7 +73,9 @@ export default {
         selected : false,
         children : [],
         layer : layer,
+        widgetList : [],
       };
+      this.onAddWidgetCommon(note.widgetList);
       if (index == null) {
         targetList.push(note);
       } else {
@@ -111,6 +126,39 @@ export default {
       const index = targetList.indexOf(note);
       this.onAddNoteCommon(targetList, layer, index);
     },
+    onAddWidgetCommon : function(targetList, layer, index) {
+      layer = layer || 1;
+      const widget = {
+        id : new Date().getTime().toString(16),
+        type : 'heading',
+        text : '',
+        mouseover : false,
+        children : [],
+        layer : layer,
+      };
+      if (index == null) {
+        targetList.push(widget);
+      } else {
+        targetList.splice(index + 1, 0, widget);
+      }  
+    },
+    onClickButtonAddWidget : function() {
+      this.onAddWidgetCommon(this.selectedNote.widgetList);
+    },
+    onAddChildWidget : function(widget) {
+      this.onAddWidgetCommon(widget.children, widget.layer + 1);
+    },
+    onAddWidgetAfter : function(parentWidget, note) {
+      const targetList = parentWidget == null ? this.selectedNote.widgetList : parentWidget.children;
+      const layer = parentWidget == null ? null : parentWidget.layer + 1;
+      const index = targetList.indexOf(note);
+      this.onAddWidgetCommon(targetList, layer, index);
+    },
+    onDeleteWidget : function(parentWidget, widget) {
+      const targetList = parentWidget == null ? this.selectedNote.widgetList : parentWidget.children;
+      const index = targetList.indexOf(widget);
+      targetList.splice(index, 1);
+    },
   },
   computed: {
     selectedPath : function() {
@@ -128,6 +176,7 @@ export default {
   },
   components: {
     NoteItem,
+    WidgetItem,    
     draggable,
   },
 }
