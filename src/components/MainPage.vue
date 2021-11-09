@@ -6,6 +6,7 @@
         v-for="note in noteList"
         v-bind:note="note"
         v-bind:key="note.id"
+        v-bind:layer="1"
         @delete="onDeleteNote"
         @editStart="onEditNoteStart"
         @editEnd="onEditNoteEnd"
